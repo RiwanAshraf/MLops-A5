@@ -1,0 +1,23 @@
+artifact_path: file:C:/Users/riwan/OneDrive/Desktop/MLops A2 - Copy/mlruns/2/models/m-ab3ad3e1083f4faba91106c02a557754/artifacts
+flavors:
+  python_function:
+    config:
+      device: null
+    data: data
+    env:
+      conda: conda.yaml
+      virtualenv: python_env.yaml
+    loader_module: mlflow.pytorch
+    pickle_module_name: mlflow.pytorch.pickle_module
+    python_version: 3.13.11
+  pytorch:
+    code: null
+    model_data: data
+    pytorch_version: 2.10.0+cpu
+mlflow_version: 3.10.1
+model_id: m-ab3ad3e1083f4faba91106c02a557754
+model_size_bytes: 3307597
+model_uuid: m-ab3ad3e1083f4faba91106c02a557754
+prompts: null
+run_id: 30e2731d85ad429e96ce9025b9f2c6e7
+utc_time_created: '2026-03-11 07:19:21.944342'
