@@ -1,16 +1,18 @@
-FROM continuumio/miniconda3
+FROM python:3.10-slim
 
 WORKDIR /app
 
-COPY environment.yml .
+# Install dependencies + DVC
+COPY requirements.txt .
+RUN pip install -r requirements.txt
+RUN pip install dvc[s3]  # change if needed
 
-# Create environment (conda automatically accepts necessary channels)
-RUN conda env create -f environment.yml
+# Pull the trained model from your repo
+RUN mkdir -p /app/model
+RUN dvc get https://github.com/<YourUsername>/mlops-assignment4 model -o /app/model
 
-# Make sure the environment is activated
-SHELL ["conda", "run", "-n", "env_rl_project", "/bin/bash", "-c"]
-
-# Copy your code last for efficient caching
+# Copy your code
 COPY . .
 
-CMD ["python", "Build_my_first_GAN.py"]
+# Run container (example: check model exists)
+CMD ["python", "-c", "print('Model ready in /app/model'); import os; print(os.listdir('/app/model'))"]
