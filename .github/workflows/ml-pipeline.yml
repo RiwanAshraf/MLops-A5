@@ -10,26 +10,27 @@ jobs:
   validate:
     runs-on: ubuntu-latest
     steps:
+      # 1. Checkout the repository
       - name: Checkout Repository
         uses: actions/checkout@v4
 
+      # 2. Set up Python
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.10'
 
+      # 3. Install dependencies
       - name: Install Dependencies
         run: pip install -r requirements.txt
 
-      - name: Install DVC
-        run: pip install dvc
-
-
+      # 4. Train the model
       - name: Train Model
         env:
           MLFLOW_URI: ${{ secrets.MLFLOW_URI }}
         run: python Build_my_first_GAN.py
 
+      # 5. Upload model info artifact
       - name: Upload model info
         uses: actions/upload-artifact@v4
         with:
@@ -39,35 +40,34 @@ jobs:
   deploy:
     needs: validate
     runs-on: ubuntu-latest
-
     steps:
-      # 1️ Checkout the repository
+      # 1. Checkout the repository
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      # 2️ Set up Python
+      # 2. Set up Python
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.10'
 
-      # 3️ Install dependencies
+      # 3. Install dependencies
       - name: Install Dependencies
         run: pip install -r requirements.txt
 
-      # 4️ Download the run ID artifact
+      # 4. Download the run ID artifact
       - name: Download model info
         uses: actions/download-artifact@v4
         with:
           name: model-info
 
-      # 5️ Check accuracy threshold
+      # 5. Validate accuracy threshold
       - name: Validate Accuracy
         env:
           MLFLOW_URI: ${{ secrets.MLFLOW_URI }}
         run: python check_threshold.py
 
-      # 6️ Mock Docker build if threshold met
+      # 6. Mock Docker build if threshold met
       - name: Mock Docker Build
         run: |
           echo "Building Docker image for Run ID: $(cat model_info.txt)"
