@@ -11,7 +11,7 @@ import mlflow
 import mlflow.pytorch
 
 # ── Hyperparameters ─────────────────────────
-LEARNING_RATE = 0.005 
+LEARNING_RATE = 0.6
 BATCH_SIZE    = 564  
 EPOCHS        = 1
 STUDENT_ID    = "202201726"   
