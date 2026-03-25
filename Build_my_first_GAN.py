@@ -13,7 +13,7 @@ import mlflow.pytorch
 # ── Hyperparameters ─────────────────────────
 LEARNING_RATE = 0.005 
 BATCH_SIZE    = 564  
-EPOCHS        = 3
+EPOCHS        = 1
 STUDENT_ID    = "202201726"   
 
 # ── MLflow Setup ───────────────────────────
