@@ -130,8 +130,8 @@ with mlflow.start_run():
     print("Run complete — model saved to MLflow artifacts.")
 
 
-    run_id = mlflow.active_run().info.run_id
+        # Save validation accuracy to file for deploy job
     with open("model_info.txt", "w") as f:
-        f.write(run_id)
+        f.write(str(val_acc))
 
-    print(f"Run ID saved to model_info.txt: {run_id}")
+    print(f"Validation accuracy saved to model_info.txt: {val_acc}")
