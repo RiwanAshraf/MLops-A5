@@ -7,7 +7,8 @@ on:
   pull_request:
 
 jobs:
-  validate-and-test:
+
+  validate:
     runs-on: ubuntu-latest
 
     steps:
@@ -22,17 +23,37 @@ jobs:
       - name: Install Dependencies
         run: pip install -r requirements.txt
 
-      - name: Linter Check
-        run: |
-          pip install flake8
-          flake8 . || true
+      - name: Pull Data
+        run: dvc pull
 
-      - name: Model Dry Test
-        run: |
-          python -c "print('Model environment ready!')"
+      - name: Train Model
+        run: python train.py
 
-      - name: Upload README as Artifact
+      - name: Save Run ID
+        run: echo "run-123" > model_info.txt
+
+      - name: Upload model info
         uses: actions/upload-artifact@v4
         with:
-          name: project-doc
-          path: README.md
+          name: model-info
+          path: model_info.txt
+
+
+  deploy:
+    needs: validate
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Download model info
+        uses: actions/download-artifact@v4
+        with:
+          name: model-info
+
+      - name: Check accuracy threshold
+        run: python check_threshold.py
+
+      - name: Mock Docker build
+        run: echo "Building Docker image for Run ID: $(cat model_info.txt)"

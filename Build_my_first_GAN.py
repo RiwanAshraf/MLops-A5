@@ -128,3 +128,10 @@ with mlflow.start_run():
     # --- Save model via MLflow PyTorch flavor ---
     mlflow.pytorch.log_model(model, artifact_path="model")
     print("Run complete — model saved to MLflow artifacts.")
+
+
+run_id = mlflow.active_run().info.run_id
+with open("model_info.txt", "w") as f:
+    f.write(run_id)
+
+print(f"Run ID saved to model_info.txt: {run_id}")
