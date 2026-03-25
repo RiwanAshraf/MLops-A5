@@ -4,10 +4,8 @@
 import os
 import mlflow
 
-mlflow_uri = os.environ.get("MLFLOW_URI")
-if not mlflow_uri:
-    raise ValueError("MLFLOW_URI environment variable not set")
-
+# Use environment variable if available, else default to local mlflow.db
+mlflow_uri = os.environ.get("MLFLOW_URI", "sqlite:///mlflow.db")
 mlflow.set_tracking_uri(mlflow_uri)
 
 # Read Run ID

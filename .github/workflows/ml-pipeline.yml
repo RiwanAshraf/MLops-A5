@@ -26,9 +26,7 @@ jobs:
           pip install -r requirements.txt
           pip install dvc[s3]  # adjust if using another remote
 
-      # 4. Pull training data & model via DVC
-      - name: Pull Data & Model
-        run: dvc pull
+   
 
       # 5. Train the model
       - name: Train Model
@@ -36,9 +34,7 @@ jobs:
           MLFLOW_URI: ${{ secrets.MLFLOW_URI }}
         run: python Build_my_first_GAN.py
 
-      # 6. Push trained model to DVC remote
-      - name: Push model to DVC
-        run: dvc push
+      
 
       # 7. Upload model info artifact
       - name: Upload model info
