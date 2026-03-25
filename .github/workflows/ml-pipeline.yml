@@ -28,7 +28,7 @@ jobs:
       - name: Train Model
         env:
           MLFLOW_URI: ${{ secrets.MLFLOW_URI }}
-          run: python Build_my_first_GAN.py
+        run: python Build_my_first_GAN.py
 
       - name: Upload model info
         uses: actions/upload-artifact@v4
