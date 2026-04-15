@@ -47,8 +47,9 @@ jobs:
           pip install -r requirements.txt
 
       - name: Train Model
-        run: |
-          python train.py
+        env:
+          MLFLOW_URI: sqlite:///mlflow.db
+        run: python train.py
 
       - name: Save model info
         run: |
