@@ -78,4 +78,4 @@ jobs:
 
     steps:
       - name: Cleanup step
-        run: echo "Cleaning up temporary cloud volumes..."
+        run: echo "Cleaning up temporary cloud volumes.."
