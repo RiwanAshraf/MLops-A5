@@ -45,7 +45,7 @@ jobs:
 
       - name: Save model info
         run: |
-          echo "RUN_ID_123" > model_info.txt
+          echo ${{ github.run_id }} > model_info.txt
 
       - name: Upload model info
         uses: actions/upload-artifact@v4
