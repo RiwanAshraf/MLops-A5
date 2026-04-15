@@ -1,96 +1,81 @@
-name: ML Model CI
+name: ML Pipeline
 
 on:
   push:
-    branches-ignore:
-      - main
+    branches:
+      - "*"
 
 jobs:
-
   validate:
     runs-on: ubuntu-latest
+
     steps:
-      # 1. Checkout repository
-      - name: Checkout Repository
+      # Checkout repo
+      - name: Checkout code
         uses: actions/checkout@v4
 
-      # 2. Set up Python
-      - name: Set up Python
+      # Setup Python
+      - name: Setup Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.10'
+          python-version: "3.10"
 
-      # 3. Install dependencies
-      - name: Install Dependencies
+      # Install dependencies
+      - name: Install dependencies
         run: |
           pip install -r requirements.txt
-          pip install dvc[s3]  # adjust if using another remote
+          pip install dvc
 
-   
+      # Pull data
+      - name: DVC Pull
+        run: dvc pull
 
-      # 5. Train the model
-      - name: Train Model
+      # Train model
+      - name: Train model
         env:
           MLFLOW_URI: ${{ secrets.MLFLOW_URI }}
-        run: python Build_my_first_GAN.py
+        run: python train.py
 
-      
-
-      # 7. Upload model info artifact
+      # Upload model_info.txt
       - name: Upload model info
         uses: actions/upload-artifact@v4
         with:
           name: model-info
           path: model_info.txt
 
-      # 8. Upload MLflow DB artifact
-      - name: Upload MLflow DB
-        uses: actions/upload-artifact@v4
-        with:
-          name: mlflow-db
-          path: mlflow.db
-
   deploy:
     needs: validate
     runs-on: ubuntu-latest
+
     steps:
-      # 1. Checkout repository
-      - name: Checkout Repository
+      # Checkout
+      - name: Checkout code
         uses: actions/checkout@v4
 
-      # 2. Set up Python
-      - name: Set up Python
+      # Setup Python
+      - name: Setup Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.10'
+          python-version: "3.10"
 
-      # 3. Install dependencies
-      - name: Install Dependencies
+      # Install dependencies
+      - name: Install dependencies
         run: |
           pip install -r requirements.txt
+          pip install mlflow
 
-      # 4. Download artifacts from validation
+      # Download artifact
       - name: Download model info
         uses: actions/download-artifact@v4
         with:
           name: model-info
 
-      - name: Download MLflow DB
-        uses: actions/download-artifact@v4
-        with:
-          name: mlflow-db
-
-      # 5. Validate accuracy threshold
-      - name: Validate Accuracy
+      # Check threshold
+      - name: Check accuracy threshold
         env:
-          MLFLOW_URI: sqlite:///mlflow.db
+          MLFLOW_URI: ${{ secrets.MLFLOW_URI }}
         run: python check_threshold.py
 
-
-      
-      # 6. Build Docker image with the trained model
-      - name: Build Docker Image
-        run: |
-          docker build \
-            --build-arg RUN_ID=$(cat model_info.txt) \
-            -t ml-model:latest .
+      # Mock Docker build (REQUIRED EXACT FORMAT)
+      - name: Mock Docker Build
+        run: echo "Building Docker image for Run ID: $(cat model_info.txt)"
