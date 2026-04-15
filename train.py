@@ -17,12 +17,16 @@ EPOCHS        = 1
 STUDENT_ID    = "202201726"   
 
 # ── MLflow Setup ───────────────────────────
-mlflow_uri = os.environ.get("MLFLOW_URI")
-if not mlflow_uri:
-    raise ValueError("MLFLOW_URI environment variable not set")
-mlflow.set_tracking_uri(mlflow_uri)
-mlflow.set_experiment("Assignment3_Riwan")
+mlflow_uri = os.environ.get("MLFLOW_URI", "sqlite:///mlflow.db")
 
+# FORCE CLEAN DB (IMPORTANT FIX)
+if mlflow_uri.startswith("sqlite"):
+    try:
+        os.remove("mlflow.db")
+    except:
+        pass
+
+mlflow.set_tracking_uri(mlflow_uri)
 # ── Data ───────────────────────────────────
 transform = transforms.Compose([
     transforms.ToTensor(),
