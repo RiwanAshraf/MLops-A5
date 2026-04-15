@@ -25,33 +25,41 @@ jobs:
 
 
   train:
-    needs: linter
-    runs-on: ubuntu-latest
+  needs: linter
+  runs-on: ubuntu-latest
 
-    # ✅ Gatekeeper condition (ALL 3 rules)
-    if: |
-      github.ref == 'refs/heads/main' &&
-      contains(github.event.head_commit.message, '[run-train]') &&
-      needs.linter.result == 'success'
+  if: |
+    github.ref == 'refs/heads/main' &&
+    contains(github.event.head_commit.message, '[run-train]') &&
+    needs.linter.result == 'success'
 
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+  steps:
+    - name: Checkout
+      uses: actions/checkout@v4
 
-      - name: Train Model
-        run: |
-          echo "Training model..."
-          python train.py
+    - name: Setup Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: "3.10"
 
-      - name: Save model info
-        run: |
-          echo ${{ github.run_id }} > model_info.txt
+    - name: Install dependencies
+      run: |
+        pip install --upgrade pip
+        pip install -r requirements.txt
 
-      - name: Upload model info
-        uses: actions/upload-artifact@v4
-        with:
-          name: model-info
-          path: model_info.txt
+    - name: Train Model
+      run: |
+        python train.py
+
+    - name: Save model info
+      run: |
+        echo ${{ github.run_id }} > model_info.txt
+
+    - name: Upload model info
+      uses: actions/upload-artifact@v4
+      with:
+        name: model-info
+        path: model_info.txt
 
 
   failure_handler:
