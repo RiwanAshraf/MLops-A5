@@ -31,7 +31,7 @@ if accuracy is None:
 
 print(f"Validation Accuracy: {accuracy:.4f}")
 
-THRESHOLD = 0.85
+THRESHOLD = 0.9999
 if accuracy < THRESHOLD:
     raise ValueError(f"Accuracy {accuracy:.4f} below threshold {THRESHOLD}! Deployment stopped.")
 else:
